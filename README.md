@@ -1,68 +1,122 @@
-# CodeIgniter 4 Application Starter
+# Enterprise-Grade CodeIgniter 4 Blog CMS
 
-## What is CodeIgniter?
+This is a fully functional, production-level Blog CMS built with CodeIgniter 4. It includes an admin dashboard, a public-facing blog, a REST API, an authentication system with roles, an email notification queue, and a comprehensive test suite.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Features
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+-   **Frontend Blog:** Responsive blog with post listings, single post view, categories, and search.
+-   **Admin Panel:** Secure dashboard for managing posts, categories, tags, and users.
+-   **REST API:** A full-featured API for interacting with posts and categories, suitable for mobile apps or other clients.
+-   **Authentication:** A robust authentication system powered by CodeIgniter Shield, with role-based access control (SuperAdmin, Editor, Viewer).
+-   **Email & Queues:** Asynchronous email notifications for new posts, handled by a database-driven job queue.
+-   **Testing:** A comprehensive suite of unit and feature tests to ensure code quality and reliability.
+-   **External API Integration:** Fetch random featured images from the Dog API.
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Requirements
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+-   PHP 8.1+
+-   MySQL
+-   Composer
 
-## Installation & updates
+## Project Setup
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/socialtunegraphics-max/CI4Blogsite.git
+    cd CI4Blogsite
+    ```
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+2.  **Install dependencies:**
+    ```bash
+    composer install
+    ```
 
-## Setup
+3.  **Configure your environment:**
+    Copy the `.env.example` file to `.env` and update it with your local environment settings, especially the database and email configurations.
+    ```bash
+    cp .env.example .env
+    ```
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+4.  **Run database migrations and seeders:**
+    This will set up the database schema and populate it with dummy data.
+    ```bash
+    php spark migrate --all
+    php spark db:seed DatabaseSeeder
+    ```
 
-## Important Change with index.php
+5.  **Start the development server:**
+    ```bash
+    php spark serve
+    ```
+    The application will be available at `http://localhost:8080`.
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+## `.env` Configuration Example
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+```
+CI_ENVIRONMENT = development
+app.baseURL = 'http://localhost:8080'
 
-**Please** read the user guide for a better explanation of how CI4 works!
+database.default.hostname = localhost
+database.default.database = ci4blog
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
 
-## Repository Management
+# Email Configuration (for mailtrap.io or similar)
+email.fromEmail = 'you@example.com'
+email.fromName = 'CI4 Blog'
+email.SMTPHost = 'smtp.mailtrap.io'
+email.SMTPUser = 'your-smtp-user'
+email.SMTPPass = 'your-smtp-pass'
+email.SMTPPort = 2525
+email.SMTPCrypto = 'tls'
+```
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+## Running the Application
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+-   **Serve the application:**
+    ```bash
+    php spark serve
+    ```
+-   **Run the job queue processor:**
+    To process pending jobs (like sending emails), run the following command:
+    ```bash
+    php spark jobs:run
+    ```
 
-## Server Requirements
+## Testing
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+To run the full suite of unit and feature tests, use the following command:
+```bash
+php spark test
+```
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+## Folder Structure
 
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+-   `/app` - The main application directory.
+    -   `/Commands` - Custom `spark` commands.
+    -   `/Controllers` - Application controllers (Admin, API, Frontend).
+    -   `/Database` - Migrations and seeders.
+    -   `/Libraries` - Custom libraries like `JobService`.
+    -   `/Models` - Database models.
+    -   `/Views` - Application views (Admin, Emails, Frontend).
+-   `/tests` - Unit and feature tests.
+    -   `/feature` - Feature tests (e.g., `AuthControllerTest`).
+    -   `/unit` - Unit tests (e.g., `JobQueueTest`).
+-   `/writable` - Directory for logs, cache, and uploads.
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+## API Documentation
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+For detailed information about the REST API, please see the [API_DOCUMENTATION.md](API_DOCUMENTATION.md) file.
+
+## Contribution Guide
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/your-feature`).
+3.  Commit your changes (`git commit -am 'Add some feature'`).
+4.  Push to the branch (`git push origin feature/your-feature`).
+5.  Create a new Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

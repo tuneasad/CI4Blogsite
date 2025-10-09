@@ -6,38 +6,70 @@ use CodeIgniter\Model;
 
 class PostModel extends Model
 {
-	protected $table			= 'posts';
-	protected $primaryKey		= 'id';
-	protected $useTimestamps	= true;
-	protected $allowedFields	= ['user_id', 'title', 'slug', 'content', 'status', 'published_at', 'image_url'];
+    protected $table            = 'posts';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'object';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = [
+        'title',
+        'slug',
+        'content',
+        'category_id',
+        'image',
+        'author_id',
+        'status',
+        'published_at',
+    ];
 
-	protected $validationRules = [
-		'user_id' => 'required|is_natural_no_zero',
-		'title'   => 'required|min_length[3]|max_length[200]',
-		'slug'    => 'required|min_length[3]|max_length[200]	',
-		'content' => 'required',
-		'status' => 'permit_empty|in_list[draft,published]',
-	];
+    // Dates
+    protected $useTimestamps = true;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
 
-	public function listPublic(string $sort = 'published_at', string $direction = 'desc', ?string $q = null)
-	{
-		$builder = $this->where('status', 'published');
-		if ($q) {
-			$builder = $builder->groupStart()
-				->like('title', $q)
-				->orLike('content', $q)
-				->groupEnd();
-		}
-		$direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
-		$sortable = ['published_at', 'created_at', 'title'];
-		$sort = in_array($sort, $sortable, true) ? $sort : 'published_at';
-		return $builder->orderBy($sort, $direction);
-	}
+    // Validation
+    protected $validationRules      = [
+        'title'       => 'required|min_length[3]|max_length[255]',
+        'content'     => 'required',
+        'category_id' => 'required|integer',
+        'status'      => 'required|in_list[Published,Draft]',
+    ];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
 
-	public function getPublishedPostsForApi()
-	{
-		return $this->where('status', 'published')
-			->orderBy('published_at', 'desc')
-			->findAll();
-	}
+    // Callbacks
+    protected $allowCallbacks = true;
+    protected $beforeInsert   = ['generateSlug'];
+    protected $beforeUpdate   = ['generateSlug'];
+
+    protected function generateSlug(array $data)
+    {
+        if (!isset($data['data']['title'])) {
+            return $data;
+        }
+
+        $slug = url_title($data['data']['title'], '-', true);
+        $data['data']['slug'] = $this->getUniqueSlug($slug, $data['id'][0] ?? null);
+
+        return $data;
+    }
+
+    private function getUniqueSlug(string $slug, int $ignoreId = null): string
+    {
+        $builder = $this->where('slug', $slug);
+        if ($ignoreId) {
+            $builder->where('id !=', $ignoreId);
+        }
+
+        $count = $builder->countAllResults();
+        if ($count > 0) {
+            return $slug . '-' . ($count + 1);
+        }
+
+        return $slug;
+    }
 }
