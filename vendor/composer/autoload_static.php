@@ -38,8 +38,6 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'C' => 
         array (
             'Config\\' => 7,
-            'CodeIgniter\\Shield\\' => 19,
-            'CodeIgniter\\Settings\\' => 21,
             'CodeIgniter\\' => 12,
         ),
         'A' => 
@@ -80,14 +78,6 @@ class ComposerStaticInit657ac079313fab046eb8c29fe1d6992b
         'Config\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app/Config',
-        ),
-        'CodeIgniter\\Shield\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/codeigniter4/shield/src',
-        ),
-        'CodeIgniter\\Settings\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/codeigniter4/settings/src',
         ),
         'CodeIgniter\\' => 
         array (

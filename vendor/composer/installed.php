@@ -19,12 +19,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'codeigniter4/authentication-implementation' => array(
-            'dev_requirement' => false,
-            'provided' => array(
-                0 => '1.0',
-            ),
-        ),
         'codeigniter4/framework' => array(
             'pretty_version' => 'v4.6.3',
             'version' => '4.6.3.0',
