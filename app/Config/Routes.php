@@ -36,7 +36,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function ($
 // ===========================
 // Admin Panel (Protected)
 // ===========================
-$routes->group('admin', ['filter' => 'auth|role:SuperAdmin,Editor'], static function ($routes) {
+$routes->group('admin', ['filter' => 'session'], static function ($routes) {
 	$routes->get('dashboard', 'Admin\AdminController::admin_dashboard');
 	// posts routes
 	$routes->get('posts', 'Admin\Posts::index');

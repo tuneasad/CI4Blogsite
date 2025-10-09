@@ -1,10 +1,14 @@
-
 <IfModule mod_rewrite.c>
+    Options -Indexes
     RewriteEngine On
 
-    # If not accessing a real file or folder, redirect to public folder
-    RewriteCond %{REQUEST_URI} !^/public/
+    # Redirect Trailing Slashes...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ public/$1 [L]
+    RewriteRule ^ index.php [L]
 </IfModule>
